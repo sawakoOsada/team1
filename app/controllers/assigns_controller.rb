@@ -15,10 +15,15 @@ class AssignsController < ApplicationController
   end
 
   def destroy
+    team = find_team(params[:team_id])
     assign = Assign.find(params[:id])
-    destroy_message = assign_destroy(assign, assign.user)
+    if current_user == team.owner || current_user == assign.user
+      destroy_message = assign_destroy(assign, assign.user)
 
-    redirect_to team_url(params[:team_id]), notice: destroy_message
+      redirect_to team_url(params[:team_id]), notice: destroy_message
+    else
+      redirect_to team_url(team), notice: I18n.t('views.messages.cannot_delete_the_user')
+    end
   end
 
   private
