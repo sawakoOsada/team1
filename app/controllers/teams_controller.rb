@@ -1,9 +1,20 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy own]
 
   def index
     @teams = Team.all
+  end
+
+  def own
+    if current_user.id == @team.owner_id
+      @team.owner_id = params[:own_user_id]
+      @team.save
+      redirect_to team_url, notice: I18n.t('views.messages.change_owner')
+      OwnerMailer.owner_mail(@team.owner.email).deliver
+    else
+      redirect_to team_url, notice: I18n.t('views.messages.cannot_change_owner')
+    end
   end
 
   def show
@@ -58,6 +69,8 @@ class TeamsController < ApplicationController
   end
 
   def team_params
-    params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+    params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id own_user_id]
   end
+
+
 end
