@@ -7,10 +7,14 @@ class TeamsController < ApplicationController
   end
 
   def own
-    @team.owner_id = params[:own_user_id]
-    @team.save
-    redirect_to team_url, notice: 'リーダー権限を移動しました！'
-    OwnerMailer.owner_mail(@team.owner.email).deliver
+    if current_user.id == @team.owner_id
+      @team.owner_id = params[:own_user_id]
+      @team.save
+      redirect_to team_url, notice: I18n.t('views.messages.change_owner')
+      OwnerMailer.owner_mail(@team.owner.email).deliver
+    else
+      redirect_to team_url, notice: I18n.t('views.messages.cannot_change_owner')
+    end
   end
 
   def show
