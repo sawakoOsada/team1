@@ -7,10 +7,8 @@ class TeamsController < ApplicationController
   end
 
   def own
-    binding.irb
     @team.owner_id = params[:own_user_id]
     @team.save
-    binding.irb
     redirect_to team_url, notice: 'リーダー権限を移動しました！'
     OwnerMailer.owner_mail(@team.owner.email).deliver
   end
