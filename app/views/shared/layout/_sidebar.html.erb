@@ -29,16 +29,17 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <% @working_team.agendas.each do |agenda| %>
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link">
-              <i class="fa fa-circle-o nav-icon"></i>
-              <span>
-                <%= agenda.title %>
-                <% if current_user == agenda.user || current_user == agenda.team.owner %>
-                <%= link_to I18n.t('views.button.delete'), agenda, method: :delete, class: 'btn btn-sm btn-danger' %><% end %>
-                <i class="right fa fa-angle-left"></i>
-              </span>
-            </a>
+        <li class="nav-item has-treeview menu-open">
+          <a href="#" class="nav-link">
+            <i class="fa fa-circle-o nav-icon"></i>
+            <p>
+              <span style="margin-right: 2em;"><%= agenda.title %></span>
+              <i class="right fa fa-angle-left"></i>
+              <object>
+                <%= link_to 'Destroy', agenda_path(agenda.id), class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %>
+              </object>
+            </p>
+          </a>
             <ul class="nav nav-treeview" style="display: block;">
               <% agenda.articles.each do |article| %>
                 <li class="nav-item">
